@@ -1,14 +1,15 @@
-﻿using System;
+﻿using Bogus;
 using Nest;
-using Bogus;
 
 class Program
 {
+    public static string ProviderIndex = "provider-index";
+
     static void Main(string[] args)
     {
         // Create a connection to Elasticsearch
         var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
-            .DefaultIndex("provider-index") // Specify the default index
+            .DefaultIndex(ProviderIndex) // Specify the default index
             .BasicAuthentication("elastic", "EYbDKCoC") // Use your Elasticsearch credentials
             .EnableDebugMode(); // Optional: Enable debug mode for detailed logs
         var client = new ElasticClient(settings);

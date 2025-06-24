@@ -1,0 +1,48 @@
+﻿@using System.Text.Json
+@using Elastic.Clients.Elasticsearch
+@using Nest
+@using elastic_web.Models
+
+@inject ILogger<Search> Logger
+    
+@page "/search2"
+@{
+    // Define search parameters
+    var searchTerm = "Reagan";
+    var fieldName = "firstName";
+
+    var indexName = "provider-index";
+
+    var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
+            .DefaultIndex(indexName) // Specify the default index
+            .BasicAuthentication("elastic", "EYbDKCoC") // Use your Elasticsearch credentials
+            .EnableDebugMode(); // Optional: Enable debug mode for detailed logs
+    var client = new ElasticClient(settings);
+
+    var result = client.Search<Provider>(s => s
+        .Query(q => q
+            .QueryString(m => m
+                .Query($"*{searchTerm}*")
+            )
+        )
+    );
+
+    Console.WriteLine($"Search Results: {result}");
+
+    if (!result.IsValid)
+    {
+        Logger.LogError("Elasticsearch query failed: {Error}", result.OriginalException?.Message);
+        return;
+    }
+
+    var jsonResult = JsonSerializer.Serialize(result.Documents, new JsonSerializerOptions
+    {
+        WriteIndented = true
+    });
+}
+
+<h2>Elasticsearch Query</h2>
+<p>Index: @indexName</p>
+<p>Field: @fieldName</p>
+<p>Search Term: @searchTerm</p>
+<pre>@jsonResult</pre>

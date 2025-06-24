@@ -24,5 +24,6 @@ docker run --rm -it --network host oliver006/es-test-data  \
     --password="EYbDKCoC" 
 
 
-*** Run App ***
-bash StartElasticSearchLocal.sh
+*** web App ***
+https://www.elastic.co/search-labs/blog/search-app-with-esre-blazor
+
