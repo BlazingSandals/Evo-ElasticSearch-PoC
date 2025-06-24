@@ -1,9 +1,6 @@
-namespace elastic_web.Models;
-
-public class Provider
+public class Provider : Person
 {
-    public string Name { get; set; }
-    public string Speciality { get; set; }
-    public string State { get; set; }
-    public IEnumerable<Patient> Patients { get; set; }
+    public new string ProperName => $"Dr {LastName}";
+    public new string PersonType = "Provider";
+    public List<Patient> Patients { get; set; } = new List<Patient>();
 }

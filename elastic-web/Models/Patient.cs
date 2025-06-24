@@ -1,6 +1,4 @@
-public class Patient
+public class Patient : Person
 {
-    public string Name { get; set; }
-    public int Age { get; set; }
-    
+    public new string PersonType = "Patient";
 }
