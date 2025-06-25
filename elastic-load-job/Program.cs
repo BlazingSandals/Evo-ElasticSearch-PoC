@@ -36,7 +36,7 @@ class Program
     {
 
         var personFaker = new Faker<T>()
-            .RuleFor(u => u.Id, f => f.IndexFaker + 1)
+            .RuleFor(u => u.Id, f => f.IndexFaker + + DateTime.Now.Second)
             .RuleFor(u => u.FirstName, f => f.Name.FirstName())
             .RuleFor(u => u.LastName, f => f.Name.LastName())
             .RuleFor(u => u.Country, f => f.Address.Country())
@@ -58,7 +58,7 @@ class Program
     public static List<Patient> GetPatients(int count)
     {
         var patientFaker = new Faker<Patient>()
-            .RuleFor(p => p.Id, f => f.IndexFaker + 1)
+            .RuleFor(p => p.Id, f => f.IndexFaker + DateTime.Now.Second)
             .RuleFor(p => p.FirstName, f => f.Name.FirstName())
             .RuleFor(p => p.LastName, f => f.Name.LastName())
             .RuleFor(p => p.Country, f => f.Address.Country())
