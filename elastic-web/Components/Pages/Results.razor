@@ -1,0 +1,59 @@
+@using elastic_web.Models
+
+@if (SearchResults != null && SearchResults.Any())
+{
+  <div class="row">
+  @foreach (var result in SearchResults)
+    {
+      <div class="col-12 mb-3">
+        <div class="card">
+          <div class="row g-0">
+            <div class="col-md-3 image-container">
+                <div class="placeholder">
+                    @result?.ProperName
+                </div>
+            </div>
+
+            <div class="col-md-9"> <!-- Adjusted to use the remaining 75% -->
+              <div class="card-body">
+                <h4 class="card-title">
+                  @result?.Phone
+                </h4>
+
+                <div class="details-container">
+                  <div class="">
+
+                    @if (result?.Patients?.Any() == true)
+                    {
+                      <p class="card-text p-first">
+                        Patients: <small class="text-muted">@string.Join(", ", result.ProperName)</small>
+                      </p>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
+else if (SearchResults != null)
+{
+  <p>No results found.</p>
+}
+
+@code {
+  [Parameter]
+  public List<Provider> SearchResults { get; set; } = new List<Provider>();
+
+  private string FormatDate(string? date)
+  {
+    if (DateTime.TryParse(date, out DateTime parsedDate))
+    {
+      return parsedDate.ToString("MMMM dd, yyyy");
+    }
+    return "";
+  }
+}

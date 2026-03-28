@@ -1,0 +1,77 @@
+@page "/search"
+@rendermode InteractiveServer
+@using System.Text.Json
+@using Elastic.Clients.Elasticsearch
+@using Nest
+@using elastic_web.Models
+@inject ILogger<Search> Logger
+
+<PageTitle>Search</PageTitle>
+
+<div class="top-row px-4 ">
+    <div class="searchbar-container">
+        <h4>Semantic Search with Elasticsearch and Blazor</h4>
+        <div class="input-group mb-3">
+            <input type="text" @bind-value="searchTerm" class="form-control" placeholder="Enter search term..." />
+            <button class="btn btn-primary input-btn" @onclick="Search_click">
+                <span class="input-group-svg">
+                    Search
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="px-4">
+    <div class="search-details-container">
+        <p role="status">Current search term: @searchTerm</p>
+        <p role="status">Total results: @totalResults</p>
+    </div>
+</div>
+
+<div class="px-4">
+    <div class="search-details-container">
+        <pre>@jsonResult</pre>
+    </div>
+</div>
+
+@code {
+    const string ProviderIndex = "provider-index";
+    private long totalResults = 0;
+    //private List<Provider> searchResults = new List<Provider>();
+    private string username = "elastic"; // changeme
+    private string password = "EYbDKCoC"; // changeme
+    private string searchTerm = "";
+    private string jsonResult = "";
+
+    void Search_click(MouseEventArgs e)
+    {
+        SearchProviders();
+    }
+
+    public IEnumerable<Provider> SearchProviders()
+    {
+        var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
+                .DefaultIndex(ProviderIndex) // Specify the default index
+                .BasicAuthentication(username, password) // Use your Elasticsearch credentials
+                .EnableDebugMode(); // Optional: Enable debug mode for detailed logs
+        var client = new ElasticClient(settings);
+
+        var result = client.Search<Provider>(s => s
+            .Query(q => q
+                .QueryString(m => m
+                    .Query($"*{searchTerm}*")
+                )
+            )
+        );
+
+        jsonResult = JsonSerializer.Serialize(result.Documents, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+        totalResults = result.Documents.Count;
+        return result.Documents;
+    }
+
+}
